@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGL Spam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+    :root { --bg: #f4f3ee; --primary: #e63946; --dark: #1a1a1a; --border: 3px solid var(--dark); --shadow: 6px 6px 0px 0px var(--dark); --shadow-sm: 3px 3px 0px 0px var(--dark); }
+    * { box-sizing: border-box; }
+    body { font-family: 'Space Mono', monospace; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .neo-box { background: #fff; border: var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+    .neo-btn { background: var(--primary); color: white; border: var(--border); box-shadow: var(--shadow-sm); padding: 12px 24px; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 10px; transition: 0.1s; }
+    .neo-btn:active { box-shadow: none; transform: translate(3px, 3px); }
+    .neo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .neo-input { border: var(--border); padding: 12px; font-family: inherit; font-size: 16px; width: 100%; margin-bottom: 12px; outline: none; }
+    .neo-input:focus { background: #ffc2c7; }
+    .neo-link { display: block; background: #ff6b6b; border: var(--border); box-shadow: var(--shadow-sm); padding: 16px; text-decoration: none; color: var(--dark); font-weight: 700; text-transform: uppercase; text-align: center; transition: 0.1s; }
+    .neo-link:hover { box-shadow: none; transform: translate(3px, 3px); }
+    .status { margin-top: 12px; padding: 14px; border: var(--border); box-shadow: var(--shadow-sm); font-weight: 700; text-align: center; display: none; }
+    .log { margin-top: 12px; padding: 12px; border: var(--border); background: #000; color: #0f0; font-size: 12px; max-height: 200px; overflow-y: auto; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="neo-box">
+      <h2 style="margin-top:0; background: var(--primary); color: #fff; display: inline-block; padding: 4px 10px;">
+    <i class="fa-solid fa-envelope"></i> NGL SPAM
+      </h2>      <input type="text" id="usn" class="neo-input" placeholder="Username NGL (contoh: username)">
+      <input type="number" id="jumlah" class="neo-input" placeholder="Jumlah pesan">
+      <input type="text" id="pesan" class="neo-input" placeholder="Isi pesan">
+      <button class="neo-btn" id="sendBtn" onclick="sendSpam()">KIRIM SPAM</button>
+      <div id="status" class="status"></div>
+      <div id="log" class="log"></div>
+    </div>
+    <a href="index.html" class="neo-link">&larr; KEMBALI KE MENU</a>
+  </div>
+  <script>
+    async function sendSpam() {
+      const usn = document.getElementById('usn').value;
+      const jumlah = parseInt(document.getElementById('jumlah').value);
+      const pesan = document.getElementById('pesan').value;
+      const btn = document.getElementById('sendBtn');
+      const status = document.getElementById('status');
+      const log = document.getElementById('log');
+
+      if(!usn || !jumlah || !pesan) return alert('Isi semua kolom!');
+      
+      btn.disabled = true;
+      btn.innerText = 'MEMPROSES...';
+      status.style.display = 'block';
+      status.style.background = '#ffe66d';
+      status.innerText = '🔄 Mengirim spam...';
+      log.style.display = 'block';
+      log.innerHTML = '';
+
+      let success = 0, fail = 0;
+      for(let i = 1; i <= jumlah; i++) {
+        try {
+          const res = await fetch(`https://api.nexadev.my.id/tools/nglspam/?usn=${encodeURIComponent(usn)}&jumlah=1&pesan=${encodeURIComponent(pesan)}`);
+          const text = await res.text();
+          if(res.ok) {
+            success++;
+            log.innerHTML += `[${i}/${jumlah}] ✅ Terkirim<br>`;
+          } else {
+            fail++;
+            log.innerHTML += `[${i}/${jumlah}] ❌ Gagal<br>`;
+          }
+        } catch(e) {
+          fail++;
+          log.innerHTML += `[${i}/${jumlah}] ❌ Error: ${e.message}<br>`;
+        }
+        log.scrollTop = log.scrollHeight;
+        await new Promise(r => setTimeout(r, 800)); // delay antar request
+      }
+
+      status.style.background = '#4ecdc4';
+      status.innerText = `✅ Selesai! Sukses: ${success} | Gagal: ${fail}`;
+      btn.disabled = false;
+      btn.innerText = 'KIRIM SPAM';
+    }
+  </script>
+</body>
+</html>

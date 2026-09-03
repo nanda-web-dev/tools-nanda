@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bratvid Viral</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+    :root { --bg: #f4f3ee; --primary: #9b5de5; --dark: #1a1a1a; --border: 3px solid var(--dark); --shadow: 6px 6px 0px 0px var(--dark); --shadow-sm: 3px 3px 0px 0px var(--dark); }
+    * { box-sizing: border-box; }
+    body { font-family: 'Space Mono', monospace; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .neo-box { background: #fff; border: var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+    .neo-btn { background: var(--primary); color: white; border: var(--border); box-shadow: var(--shadow-sm); padding: 12px 24px; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 10px; transition: 0.1s; }
+    .neo-btn:active { box-shadow: none; transform: translate(3px, 3px); }
+    .neo-btn.download { background: #ffe66d; color: #000; }
+    .neo-input { border: var(--border); padding: 12px; font-family: inherit; font-size: 16px; width: 100%; margin-bottom: 12px; outline: none; }
+    .neo-input:focus { background: #e0cffc; }
+    .neo-link { display: block; background: #ff6b6b; border: var(--border); box-shadow: var(--shadow-sm); padding: 16px; text-decoration: none; color: var(--dark); font-weight: 700; text-transform: uppercase; text-align: center; transition: 0.1s; }
+    .neo-link:hover { box-shadow: none; transform: translate(3px, 3px); }
+    .result-video { width: 100%; border: var(--border); box-shadow: var(--shadow-sm); margin-top: 16px; display: none; background: #000; }
+    .status { margin-top: 12px; padding: 10px; border: var(--border); background: #fff; text-align: center; font-weight: 700; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="neo-box">
+      <h2 style="margin-top:0; background: var(--primary); color: #fff; display: inline-block; padding: 4px 10px;">
+    <i class="fa-solid fa-film"></i> BRATVID VIRAL
+      </h2>
+      <input type="text" id="input1" class="neo-input" placeholder="Masukkan teks video...">
+      <button class="neo-btn" onclick="generate()">GENERATE VIDEO</button>
+      <div id="status" class="status"></div>
+      <video id="result" class="result-video" controls></video>
+      <button class="neo-btn download" id="downloadBtn" style="display:none;" onclick="downloadFile()">⬇ DOWNLOAD VIDEO</button>
+    </div>
+    <a href="index.html" class="neo-link">&larr; KEMBALI KE MENU</a>
+  </div>
+  <script>
+    let currentUrl = '';
+    function generate() {
+      const val = document.getElementById('input1').value;
+      if(!val) return alert('Isi kolom terlebih dahulu!');
+      currentUrl = `https://apii.nexadev.my.id/bratvid2?text=${encodeURIComponent(val)}`;
+      const video = document.getElementById('result');
+      const status = document.getElementById('status');
+      status.style.display = 'block';
+      status.innerText = '⏳ Generating video, mohon tunggu...';
+      video.src = currentUrl;
+      video.onloadeddata = () => {
+        video.style.display = 'block';
+        document.getElementById('downloadBtn').style.display = 'block';
+        status.innerText = '✅ Video siap diputar dan diunduh!';
+        status.style.background = '#4ecdc4';
+      };
+      video.onerror = () => {
+        status.innerText = '❌ Gagal memuat video.';
+        status.style.background = '#ff6b6b';
+      };
+    }
+    function downloadFile() {
+      const status = document.getElementById('status');
+      status.innerText = '⏳ Mengunduh video...';
+      fetch(currentUrl).then(r => r.blob()).then(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'bratvid.mp4';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        status.innerText = '✅ Download selesai!';
+      });
+    }
+  </script>
+</body>
+</html>

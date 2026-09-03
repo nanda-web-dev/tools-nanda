@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fake FF Duo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+    :root { --bg: #f4f3ee; --primary: #ef476f; --dark: #1a1a1a; --border: 3px solid var(--dark); --shadow: 6px 6px 0px 0px var(--dark); --shadow-sm: 3px 3px 0px 0px var(--dark); }
+    * { box-sizing: border-box; }
+    body { font-family: 'Space Mono', monospace; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .neo-box { background: #fff; border: var(--border); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+    .neo-btn { background: var(--primary); color: white; border: var(--border); box-shadow: var(--shadow-sm); padding: 12px 24px; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 10px; transition: 0.1s; }
+    .neo-btn:active { box-shadow: none; transform: translate(3px, 3px); }
+    .neo-btn.download { background: #ffe66d; color: #000; }
+    .neo-input { border: var(--border); padding: 12px; font-family: inherit; font-size: 16px; width: 100%; margin-bottom: 12px; outline: none; }
+    .neo-input:focus { background: #ffd6e0; }
+    .neo-link { display: block; background: #ff6b6b; border: var(--border); box-shadow: var(--shadow-sm); padding: 16px; text-decoration: none; color: var(--dark); font-weight: 700; text-transform: uppercase; text-align: center; transition: 0.1s; }
+    .neo-link:hover { box-shadow: none; transform: translate(3px, 3px); }
+    .result-img { max-width: 100%; border: var(--border); box-shadow: var(--shadow-sm); margin-top: 16px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="neo-box">
+      <h2 style="margin-top:0; background: var(--primary); color: #fff; display: inline-block; padding: 4px 10px;">
+    <i class="fa-solid fa-user-group fa-crosshairs"></i> FAKE FF DUO
+      </h2>
+      <input type="text" id="input1" class="neo-input" placeholder="Nickname Player 1">
+      <input type="text" id="input2" class="neo-input" placeholder="Nickname Player 2">
+      <button class="neo-btn" onclick="generate()">GENERATE</button>
+      <img id="result" class="result-img" alt="Result">
+      <button class="neo-btn download" id="downloadBtn" style="display:none;" onclick="downloadFile()">⬇ DOWNLOAD GAMBAR</button>
+    </div>
+    <a href="index.html" class="neo-link">&larr; KEMBALI KE MENU</a>
+  </div>
+  <script>
+    let currentUrl = '';
+    function generate() {
+      const n1 = document.getElementById('input1').value;
+      const n2 = document.getElementById('input2').value;
+      if(!n1 || !n2) return alert('Isi kedua nickname terlebih dahulu!');
+      currentUrl = `https://apii.nexadev.my.id/fakeffduo?nickname1=${encodeURIComponent(n1)}&nickname2=${encodeURIComponent(n2)}`;
+      const img = document.getElementById('result');
+      img.src = currentUrl;
+      img.onload = () => { document.getElementById('downloadBtn').style.display = 'block'; };
+      img.style.display = 'block';
+    }
+    function downloadFile() {
+      fetch(currentUrl).then(r => r.blob()).then(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'fakeff_duo.png';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      });
+    }
+  </script>
+</body>
+</html>
